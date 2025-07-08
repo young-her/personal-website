@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# testing
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# CI/CD
+.github/secrets/
+trivy-results.sarif
+
+# IDE
+.vscode/settings.json
+.idea/

@@ -1,0 +1,56 @@
+# Vercel ignore file
+# Files and directories to ignore during deployment
+
+# Development files
+.env.local
+.env.development
+.env.test
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+project_document/
+
+# Scripts (except build scripts)
+scripts/deploy.sh
+scripts/health-check.sh
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Source maps (optional, uncomment if you don't want them in production)
+# *.map
+
+# TypeScript build info
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# Husky
+.husky/
+
+# Git
+.git/
+.gitignore

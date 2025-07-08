@@ -1,0 +1,413 @@
+---
+title: "前端性能优化实战指南"
+description: "从核心 Web 指标到实际优化技巧，全面提升网站性能的实用指南。"
+date: "2025-07-05"
+author: "站长"
+tags: ["性能优化", "Web性能", "前端", "用户体验"]
+published: true
+---
+
+# 前端性能优化实战指南
+
+网站性能直接影响用户体验和搜索引擎排名。本文将从核心 Web 指标出发，提供系统性的性能优化策略。
+
+## 📊 核心 Web 指标 (Core Web Vitals)
+
+### 1. Largest Contentful Paint (LCP)
+
+**目标：≤ 2.5 秒**
+
+LCP 衡量页面主要内容的加载速度：
+
+```html
+<!-- 优化前：大图片阻塞渲染 -->
+<img src="hero-large.jpg" alt="Hero image" />
+
+<!-- 优化后：使用适当尺寸和格式 -->
+<picture>
+  <source media="(min-width: 768px)" srcset="hero-desktop.webp">
+  <source media="(min-width: 480px)" srcset="hero-tablet.webp">
+  <img src="hero-mobile.webp" alt="Hero image" loading="eager">
+</picture>
+```
+
+### 2. First Input Delay (FID)
+
+**目标：≤ 100 毫秒**
+
+优化 JavaScript 执行：
+
+```javascript
+// 使用 Web Workers 处理计算密集型任务
+const worker = new Worker('calculations.js')
+worker.postMessage({ data: heavyData })
+
+worker.onmessage = function(e) {
+  // 处理结果，不阻塞主线程
+  updateUI(e.data)
+}
+```
+
+### 3. Cumulative Layout Shift (CLS)
+
+**目标：≤ 0.1**
+
+防止布局偏移：
+
+```css
+/* 为图片预留空间 */
+.image-container {
+  aspect-ratio: 16/9;
+  background: #f0f0f0;
+}
+
+/* 避免动态内容插入 */
+.ad-placeholder {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+## 🚀 资源优化策略
+
+### 1. 图片优化
+
+**现代图片格式：**
+
+```javascript
+// Next.js Image 组件自动优化
+import Image from 'next/image'
+
+export default function OptimizedImage() {
+  return (
+    <Image
+      src="/hero.jpg"
+      alt="描述"
+      width={1200}
+      height={600}
+      priority={true}
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+    />
+  )
+}
+```
+
+**懒加载实现：**
+
+```javascript
+// 原生懒加载
+<img src="image.jpg" loading="lazy" alt="描述" />
+
+// Intersection Observer API
+const imageObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target
+      img.src = img.dataset.src
+      img.classList.remove('lazy')
+      observer.unobserve(img)
+    }
+  })
+})
+
+document.querySelectorAll('img[data-src]').forEach(img => {
+  imageObserver.observe(img)
+})
+```
+
+### 2. JavaScript 优化
+
+**代码分割：**
+
+```javascript
+// 动态导入
+const LazyComponent = lazy(() => import('./LazyComponent'))
+
+// 路由级别分割
+const BlogPage = lazy(() => import('./pages/Blog'))
+
+function App() {
+  return (
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Route path="/blog" component={BlogPage} />
+      </Suspense>
+    </Router>
+  )
+}
+```
+
+**Tree Shaking：**
+
+```javascript
+// 避免：导入整个库
+import _ from 'lodash'
+
+// 推荐：只导入需要的函数
+import { debounce } from 'lodash/debounce'
+
+// 或使用 ES6 modules
+import debounce from 'lodash.debounce'
+```
+
+### 3. CSS 优化
+
+**关键 CSS 内联：**
+
+```html
+<head>
+  <style>
+    /* 关键路径 CSS */
+    .header { ... }
+    .hero { ... }
+  </style>
+  
+  <!-- 非关键 CSS 异步加载 -->
+  <link rel="preload" href="main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="main.css"></noscript>
+</head>
+```
+
+**CSS 容器查询：**
+
+```css
+/* 响应式设计的新方法 */
+.card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+```
+
+## 🔄 缓存策略
+
+### 1. HTTP 缓存
+
+```javascript
+// next.config.js
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### 2. Service Worker
+
+```javascript
+// sw.js
+const CACHE_NAME = 'v1'
+const urlsToCache = [
+  '/',
+  '/static/css/main.css',
+  '/static/js/main.js'
+]
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  )
+})
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response
+        }
+        return fetch(event.request)
+      })
+  )
+})
+```
+
+## 📡 网络优化
+
+### 1. 资源预加载
+
+```html
+<!-- DNS 预解析 -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+
+<!-- 预连接 -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- 预加载关键资源 -->
+<link rel="preload" href="hero.jpg" as="image">
+
+<!-- 预获取下个页面资源 -->
+<link rel="prefetch" href="/next-page.html">
+```
+
+### 2. HTTP/2 推送
+
+```javascript
+// 服务器推送关键资源
+app.get('/', (req, res) => {
+  res.push('/critical.css', {
+    headers: {
+      'content-type': 'text/css'
+    }
+  })
+  res.push('/app.js', {
+    headers: {
+      'content-type': 'application/javascript'
+    }
+  })
+  res.render('index')
+})
+```
+
+## 🔧 性能监控
+
+### 1. Web Vitals 监控
+
+```javascript
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals'
+
+function sendToAnalytics(metric) {
+  // 发送到分析服务
+  gtag('event', metric.name, {
+    value: Math.round(metric.value),
+    metric_id: metric.id,
+    metric_value: metric.value,
+    metric_delta: metric.delta
+  })
+}
+
+getCLS(sendToAnalytics)
+getFID(sendToAnalytics)
+getFCP(sendToAnalytics)
+getLCP(sendToAnalytics)
+getTTFB(sendToAnalytics)
+```
+
+### 2. Performance Observer
+
+```javascript
+// 监控资源加载
+const observer = new PerformanceObserver((list) => {
+  list.getEntries().forEach((entry) => {
+    if (entry.duration > 1000) {
+      console.warn(`慢资源: ${entry.name} - ${entry.duration}ms`)
+    }
+  })
+})
+
+observer.observe({ entryTypes: ['resource'] })
+```
+
+## 📱 移动端优化
+
+### 1. 视口优化
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+```
+
+### 2. 触摸优化
+
+```css
+/* 增大触摸目标 */
+.button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 24px;
+}
+
+/* 优化滚动性能 */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+```
+
+## 🔍 性能测试工具
+
+### 1. Lighthouse CI
+
+```yaml
+# .github/workflows/lighthouse.yml
+name: Lighthouse CI
+on: [push]
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lighthouse CI Action
+        uses: treosh/lighthouse-ci-action@v8
+        with:
+          configPath: './lighthouserc.json'
+```
+
+### 2. Bundle 分析
+
+```javascript
+// 分析包大小
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
+
+module.exports = withBundleAnalyzer({
+  // Next.js 配置
+})
+```
+
+## 📈 性能优化清单
+
+### 加载性能
+- [ ] 压缩和优化图片
+- [ ] 使用 WebP/AVIF 格式
+- [ ] 实施懒加载
+- [ ] 代码分割和 Tree Shaking
+- [ ] 启用 Gzip/Brotli 压缩
+
+### 渲染性能
+- [ ] 减少 DOM 节点数量
+- [ ] 避免强制同步布局
+- [ ] 使用 CSS transforms 而非改变布局属性
+- [ ] 优化动画性能
+
+### 缓存策略
+- [ ] 设置适当的 HTTP 缓存头
+- [ ] 实施 Service Worker
+- [ ] 使用 CDN 分发静态资源
+
+### 用户体验
+- [ ] 实现骨架屏
+- [ ] 优化字体加载
+- [ ] 减少 CLS
+
+## 总结
+
+性能优化是一个持续的过程，需要：
+
+1. **建立基准线** - 使用 Lighthouse 等工具测量当前性能
+2. **设定目标** - 基于业务需求设定性能目标
+3. **逐步优化** - 优先处理影响最大的问题
+4. **持续监控** - 建立性能监控和告警机制
+
+记住：**测量 → 优化 → 验证** 的循环是性能优化的关键。
+
+性能不是一个功能，而是所有功能的基础。投资于性能优化，就是投资于用户体验和业务成功。 

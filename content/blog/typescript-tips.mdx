@@ -1,0 +1,325 @@
+---
+title: "TypeScript 进阶技巧与最佳实践"
+description: "深入探索 TypeScript 的高级特性，分享实用的类型编程技巧和最佳实践。"
+date: "2025-07-05"
+author: "站长"
+tags: ["TypeScript", "JavaScript", "类型系统", "前端开发", "编程技巧"]
+published: true
+---
+
+# TypeScript 进阶技巧与最佳实践
+
+TypeScript 不仅仅是 JavaScript 的类型检查器，它还是一个强大的类型编程工具。本文将分享一些进阶技巧，帮助你更好地利用 TypeScript 的类型系统。
+
+## 🎯 高级类型技巧
+
+### 1. 条件类型（Conditional Types）
+
+条件类型允许我们根据类型条件创建灵活的类型：
+
+```typescript
+type NonNullable<T> = T extends null | undefined ? never : T
+
+// 实用示例：提取数组元素类型
+type ArrayElement<T> = T extends (infer U)[] ? U : never
+
+type StringArray = string[]
+type Element = ArrayElement<StringArray> // string
+```
+
+### 2. 映射类型（Mapped Types）
+
+创建基于现有类型的新类型：
+
+```typescript
+// 将所有属性变为可选
+type Partial<T> = {
+  [P in keyof T]?: T[P]
+}
+
+// 将所有属性变为只读
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P]
+}
+
+// 实用示例：创建 API 响应类型
+type ApiResponse<T> = {
+  data: T
+  status: 'success' | 'error'
+  message?: string
+}
+
+type UserResponse = ApiResponse<User>
+```
+
+### 3. 模板字面量类型
+
+构建动态字符串类型：
+
+```typescript
+type EventName<T extends string> = `on${Capitalize<T>}`
+
+type ClickEvent = EventName<'click'> // 'onClick'
+type HoverEvent = EventName<'hover'> // 'onHover'
+
+// 路由类型安全
+type Route = '/home' | '/about' | '/contact'
+type ApiRoute<T extends Route> = `/api${T}`
+
+type HomeApi = ApiRoute<'/home'> // '/api/home'
+```
+
+## 🛡️ 类型安全策略
+
+### 1. 严格的 TSConfig 配置
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  }
+}
+```
+
+### 2. 运行时类型验证
+
+结合 Zod 进行运行时验证：
+
+```typescript
+import { z } from 'zod'
+
+const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email(),
+  age: z.number().min(0).max(120),
+})
+
+type User = z.infer<typeof UserSchema>
+
+function createUser(data: unknown): User {
+  return UserSchema.parse(data) // 运行时验证
+}
+```
+
+### 3. 品牌类型（Branded Types）
+
+防止基本类型的误用：
+
+```typescript
+type UserId = number & { __brand: 'UserId' }
+type PostId = number & { __brand: 'PostId' }
+
+function createUserId(id: number): UserId {
+  return id as UserId
+}
+
+function createPostId(id: number): PostId {
+  return id as PostId
+}
+
+function getUserById(id: UserId): User {
+  // 编译时确保传入正确的 ID 类型
+  return users.find(user => user.id === id)
+}
+
+// 错误：类型不匹配
+// getUserById(createPostId(123)) // ❌
+// 正确：类型匹配
+getUserById(createUserId(123)) // ✅
+```
+
+## 🏗️ 架构模式
+
+### 1. 依赖注入模式
+
+```typescript
+interface Logger {
+  log(message: string): void
+}
+
+interface Database {
+  save<T>(entity: T): Promise<T>
+  find<T>(id: string): Promise<T | null>
+}
+
+class UserService {
+  constructor(
+    private logger: Logger,
+    private database: Database
+  ) {}
+
+  async createUser(userData: CreateUserRequest): Promise<User> {
+    this.logger.log('Creating user...')
+    return this.database.save(userData)
+  }
+}
+
+// 使用
+const logger: Logger = new ConsoleLogger()
+const database: Database = new PostgresDatabase()
+const userService = new UserService(logger, database)
+```
+
+### 2. 工厂模式
+
+```typescript
+interface Shape {
+  area(): number
+}
+
+class Circle implements Shape {
+  constructor(private radius: number) {}
+  area(): number {
+    return Math.PI * this.radius ** 2
+  }
+}
+
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+  area(): number {
+    return this.width * this.height
+  }
+}
+
+type ShapeType = 'circle' | 'rectangle'
+
+class ShapeFactory {
+  static create(type: ShapeType, ...args: number[]): Shape {
+    switch (type) {
+      case 'circle':
+        return new Circle(args[0])
+      case 'rectangle':
+        return new Rectangle(args[0], args[1])
+      default:
+        throw new Error(`Unknown shape type: ${type}`)
+    }
+  }
+}
+```
+
+## 🎨 实用工具类型
+
+### 1. 深度类型操作
+
+```typescript
+// 深度可选
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+}
+
+// 深度只读
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
+}
+
+// 选择特定键
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+
+// 排除特定键
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+```
+
+### 2. 函数类型工具
+
+```typescript
+// 提取函数参数类型
+type Parameters<T extends (...args: any) => any> = 
+  T extends (...args: infer P) => any ? P : never
+
+// 提取函数返回类型
+type ReturnType<T extends (...args: any) => any> = 
+  T extends (...args: any) => infer R ? R : any
+
+// 实用示例
+function processUser(id: number, name: string): Promise<User> {
+  // 实现...
+}
+
+type ProcessUserParams = Parameters<typeof processUser> // [number, string]
+type ProcessUserReturn = ReturnType<typeof processUser> // Promise<User>
+```
+
+## 🚀 性能优化
+
+### 1. 类型缓存
+
+```typescript
+// 避免复杂类型重复计算
+type ExpensiveType<T> = /* 复杂的类型操作 */
+
+// 使用类型别名缓存结果
+type CachedExpensiveType<T> = ExpensiveType<T>
+```
+
+### 2. 递归类型优化
+
+```typescript
+// 限制递归深度
+type DeepPartial<T, D extends number = 5> = 
+  D extends 0 
+    ? T 
+    : {
+        [P in keyof T]?: T[P] extends object 
+          ? DeepPartial<T[P], Prev<D>>
+          : T[P]
+      }
+
+type Prev<T extends number> = [-1, 0, 1, 2, 3, 4, 5][T]
+```
+
+## 🧪 测试类型
+
+```typescript
+// 类型测试工具
+type Expect<T extends true> = T
+type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends 
+  (<T>() => T extends Y ? 1 : 2) ? true : false
+
+// 测试示例
+type Test1 = Expect<Equal<Pick<User, 'id'>, { id: number }>>
+type Test2 = Expect<Equal<Omit<User, 'id'>, { name: string; email: string }>>
+```
+
+## 📚 最佳实践总结
+
+1. **优先使用类型推断**：让 TypeScript 自动推断类型，只在必要时显式声明
+
+2. **合理使用 `any`**：避免使用 `any`，考虑使用 `unknown` 或具体的联合类型
+
+3. **利用严格模式**：启用所有严格检查选项
+
+4. **组合而非继承**：优先使用接口组合和联合类型
+
+5. **类型守卫**：使用类型守卫确保运行时类型安全
+
+```typescript
+function isString(value: unknown): value is string {
+  return typeof value === 'string'
+}
+
+function processValue(value: unknown) {
+  if (isString(value)) {
+    // 这里 value 被正确推断为 string
+    console.log(value.toUpperCase())
+  }
+}
+```
+
+## 结语
+
+TypeScript 的类型系统非常强大，掌握这些进阶技巧可以帮助你：
+
+- 编写更安全、更可维护的代码
+- 提供更好的开发体验
+- 减少运行时错误
+- 提升代码的自文档化程度
+
+记住，类型系统是为了帮助开发，而不是阻碍开发。在复杂性和实用性之间找到平衡是关键。 

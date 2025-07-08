@@ -1,0 +1,153 @@
+{
+  "categories": [
+    {
+      "id": "development",
+      "name": "开发工具",
+      "description": "编程开发相关的实用工具",
+      "icon": "Code"
+    },
+    {
+      "id": "design",
+      "name": "设计工具",
+      "description": "UI/UX 设计和图形处理工具",
+      "icon": "Palette"
+    },
+    {
+      "id": "productivity",
+      "name": "效率工具",
+      "description": "提升工作效率的各类工具",
+      "icon": "Zap"
+    },
+    {
+      "id": "ai",
+      "name": "AI 工具",
+      "description": "人工智能和机器学习相关工具",
+      "icon": "Brain"
+    },
+    {
+      "id": "resources",
+      "name": "学习资源",
+      "description": "技术学习和参考资源",
+      "icon": "BookOpen"
+    }
+  ],
+  "tools": [
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "description": "微软开发的免费代码编辑器，支持丰富的插件生态",
+      "url": "https://code.visualstudio.com",
+      "category": "development",
+      "tags": ["编辑器", "IDE", "开源"],
+      "featured": true
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "description": "全球最大的代码托管平台，支持 Git 版本控制",
+      "url": "https://github.com",
+      "category": "development",
+      "tags": ["Git", "代码托管", "开源"],
+      "featured": true
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "description": "现代化的前端部署平台，专为 React、Next.js 等框架优化",
+      "url": "https://vercel.com",
+      "category": "development",
+      "tags": ["部署", "前端", "Serverless"],
+      "featured": true
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "description": "基于浏览器的协作式界面设计工具",
+      "url": "https://figma.com",
+      "category": "design",
+      "tags": ["UI设计", "协作", "原型"],
+      "featured": true
+    },
+    {
+      "id": "canva",
+      "name": "Canva",
+      "description": "简单易用的在线图形设计平台",
+      "url": "https://canva.com",
+      "category": "design",
+      "tags": ["图形设计", "模板", "社交媒体"],
+      "featured": false
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "description": "集笔记、数据库、项目管理于一体的工作空间",
+      "url": "https://notion.so",
+      "category": "productivity",
+      "tags": ["笔记", "项目管理", "协作"],
+      "featured": true
+    },
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT",
+      "description": "OpenAI 开发的 AI 聊天助手，支持代码生成和问题解答",
+      "url": "https://chat.openai.com",
+      "category": "ai",
+      "tags": ["AI助手", "代码生成", "对话"],
+      "featured": true
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "description": "Anthropic 开发的 AI 助手，擅长长文本理解和创作",
+      "url": "https://claude.ai",
+      "category": "ai",
+      "tags": ["AI助手", "文本理解", "创作"],
+      "featured": false
+    },
+    {
+      "id": "mdn",
+      "name": "MDN Web Docs",
+      "description": "Mozilla 维护的 Web 技术权威文档",
+      "url": "https://developer.mozilla.org",
+      "category": "resources",
+      "tags": ["文档", "Web标准", "学习"],
+      "featured": true
+    },
+    {
+      "id": "stackoverflow",
+      "name": "Stack Overflow",
+      "description": "程序员问答社区，解决编程问题的首选平台",
+      "url": "https://stackoverflow.com",
+      "category": "resources",
+      "tags": ["问答", "社区", "编程"],
+      "featured": false
+    },
+    {
+      "id": "npmjs",
+      "name": "npm",
+      "description": "Node.js 包管理器，JavaScript 生态的核心",
+      "url": "https://npmjs.com",
+      "category": "development",
+      "tags": ["包管理", "JavaScript", "Node.js"],
+      "featured": false
+    },
+    {
+      "id": "tailwindcss",
+      "name": "Tailwind CSS",
+      "description": "实用优先的 CSS 框架，快速构建现代 UI",
+      "url": "https://tailwindcss.com",
+      "category": "development",
+      "tags": ["CSS框架", "UI", "前端"],
+      "featured": false
+    },
+    {
+      "id": "ld",
+      "name": "Linux DO",
+      "description": "记得刷帖子，记得刷帖子，记得刷帖子",
+      "url": "https://linux.do",
+      "category": "development",
+      "tags": ["刷帖", "学习"],
+      "featured": false
+    }
+  ]
+} 

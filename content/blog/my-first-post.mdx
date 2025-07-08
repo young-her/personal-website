@@ -1,0 +1,61 @@
+---
+title: "欢迎来到我的个人网站"
+description: "这是我的第一篇博客文章，介绍了网站的功能和技术栈。"
+date: "2025-07-07"
+author: "站长"
+tags: ["Next.js", "React", "个人网站", "博客"]
+published: true
+---
+
+# 欢迎来到我的个人网站
+
+这是我使用 **Next.js 15** 和 **TypeScript** 构建的个人网站。网站包含两个主要功能：
+
+## 🛠️ 工具导航
+
+提供各种常用工具的快速访问链接，让日常工作更加高效。
+
+## 📝 技术博客
+
+分享技术心得、学习笔记和项目经验。
+
+### 技术栈
+
+- **前端框架**: Next.js 15 (App Router)
+- **语言**: TypeScript
+- **样式**: Tailwind CSS + shadcn/ui
+- **内容管理**: next-mdx-remote
+- **部署**: Vercel
+
+### 特色功能
+
+1. **静态生成**: 博客文章支持 SSG，确保快速加载
+2. **增量更新**: 使用 ISR 实现内容的增量静态重新生成
+3. **安全防护**: 集成 rehype-sanitize 防止 XSS 攻击
+4. **代码高亮**: 支持多种编程语言的语法高亮
+
+```typescript
+// 示例代码
+interface BlogPost {
+  title: string
+  description: string
+  date: string
+  content: string
+}
+
+const post: BlogPost = {
+  title: "我的第一篇文章",
+  description: "这是描述",
+  date: "2025-07-07",
+  content: "文章内容..."
+}
+```
+
+## 未来计划
+
+- [ ] 添加搜索功能
+- [ ] 集成评论系统
+- [ ] 支持多语言
+- [ ] 优化移动端体验
+
+感谢您的访问！🎉 
