@@ -3,6 +3,12 @@ title: upload-labs文件上传靶场全通关
 date: 2024-07-18 20:34:27
 tags: 渗透测试
 categories: [渗透测试,基本漏洞,文件上传]
+title: "upload-labs文件上传靶场全通关"
+description: "sql-labs文件上传靶场通关"
+date: "2024-07-18"
+author: "y0un92"
+tags: ["渗透测试", "React", "前端", "Web开发"]
+published: true
 ---
 
 ### 一、环境搭建
