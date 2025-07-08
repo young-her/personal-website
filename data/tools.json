@@ -29,70 +29,58 @@
       "name": "学习资源",
       "description": "技术学习和参考资源",
       "icon": "BookOpen"
+    },
+    {
+      "id": "entertainment",
+      "name": "娱乐工具",
+      "description": "娱乐工具",
+      "icon": "Gamepad"
     }
   ],
   "tools": [
     {
-      "id": "vscode",
-      "name": "Visual Studio Code",
-      "description": "微软开发的免费代码编辑器，支持丰富的插件生态",
-      "url": "https://code.visualstudio.com",
+      "id": "overleaf",
+      "name": "Overleaf",
+      "description": "在线LaTeX编辑器，支持协作编辑",
+      "url": "https://overleaf.com",
       "category": "development",
-      "tags": ["编辑器", "IDE", "开源"],
+      "tags": ["LaTeX", "协作编辑", "在线编辑器"],
       "featured": true
     },
     {
-      "id": "github",
-      "name": "GitHub",
-      "description": "全球最大的代码托管平台，支持 Git 版本控制",
-      "url": "https://github.com",
-      "category": "development",
-      "tags": ["Git", "代码托管", "开源"],
+      "id": "Google Scholar",
+      "name": "Google Scholar",
+      "description": "Google学术搜索，搜索学术论文",
+      "url": "https://scholar.google.com",
+      "category": "resources",
+      "tags": ["学术搜索", "论文"],
       "featured": true
     },
     {
-      "id": "vercel",
-      "name": "Vercel",
-      "description": "现代化的前端部署平台，专为 React、Next.js 等框架优化",
-      "url": "https://vercel.com",
-      "category": "development",
-      "tags": ["部署", "前端", "Serverless"],
+      "id": "dblp",
+      "name": "DBLP",
+      "description": "计算机科学论文数据库",
+      "url": "https://dblp.org",
+      "category": "resources",
+      "tags": ["论文", "数据库"],
       "featured": true
     },
     {
-      "id": "figma",
-      "name": "Figma",
-      "description": "基于浏览器的协作式界面设计工具",
-      "url": "https://figma.com",
-      "category": "design",
-      "tags": ["UI设计", "协作", "原型"],
-      "featured": true
-    },
-    {
-      "id": "canva",
-      "name": "Canva",
-      "description": "简单易用的在线图形设计平台",
-      "url": "https://canva.com",
-      "category": "design",
-      "tags": ["图形设计", "模板", "社交媒体"],
+      "id": "ghproxy",
+      "name": "ghproxy",
+      "description": "GitHub代理，加速GitHub访问",
+      "url": "https://ghproxy.com",
+      "category": "resources",
+      "tags": ["GitHub", "代理"],
       "featured": false
     },
     {
-      "id": "notion",
-      "name": "Notion",
-      "description": "集笔记、数据库、项目管理于一体的工作空间",
-      "url": "https://notion.so",
-      "category": "productivity",
-      "tags": ["笔记", "项目管理", "协作"],
-      "featured": true
-    },
-    {
-      "id": "chatgpt",
-      "name": "ChatGPT",
-      "description": "OpenAI 开发的 AI 聊天助手，支持代码生成和问题解答",
-      "url": "https://chat.openai.com",
-      "category": "ai",
-      "tags": ["AI助手", "代码生成", "对话"],
+      "id": "excalidraw",
+      "name": "Excalidraw",
+      "description": "在线绘图工具，支持协作编辑",
+      "url": "https://excalidraw.com",
+      "category": "design",
+      "tags": ["绘图", "协作"],
       "featured": true
     },
     {
@@ -102,43 +90,7 @@
       "url": "https://claude.ai",
       "category": "ai",
       "tags": ["AI助手", "文本理解", "创作"],
-      "featured": false
-    },
-    {
-      "id": "mdn",
-      "name": "MDN Web Docs",
-      "description": "Mozilla 维护的 Web 技术权威文档",
-      "url": "https://developer.mozilla.org",
-      "category": "resources",
-      "tags": ["文档", "Web标准", "学习"],
       "featured": true
-    },
-    {
-      "id": "stackoverflow",
-      "name": "Stack Overflow",
-      "description": "程序员问答社区，解决编程问题的首选平台",
-      "url": "https://stackoverflow.com",
-      "category": "resources",
-      "tags": ["问答", "社区", "编程"],
-      "featured": false
-    },
-    {
-      "id": "npmjs",
-      "name": "npm",
-      "description": "Node.js 包管理器，JavaScript 生态的核心",
-      "url": "https://npmjs.com",
-      "category": "development",
-      "tags": ["包管理", "JavaScript", "Node.js"],
-      "featured": false
-    },
-    {
-      "id": "tailwindcss",
-      "name": "Tailwind CSS",
-      "description": "实用优先的 CSS 框架，快速构建现代 UI",
-      "url": "https://tailwindcss.com",
-      "category": "development",
-      "tags": ["CSS框架", "UI", "前端"],
-      "featured": false
     },
     {
       "id": "ld",
@@ -147,6 +99,24 @@
       "url": "https://linux.do",
       "category": "development",
       "tags": ["刷帖", "学习"],
+      "featured": true
+    },
+    {
+      "id": "gamer520",
+      "name": "Gamer520",
+      "description": "Gamer520，游戏资讯",
+      "url": "https://gamer520.com",
+      "category": "entertainment",
+      "tags": ["游戏", "资讯"],
+      "featured": false
+    },
+    {
+      "id": "adversarial-ai",
+      "name": "Adversarial",
+      "description": "AI对抗性攻击相关资料",
+      "url": "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/#threat-model",
+      "category": "ai",
+      "tags": ["对抗性攻击", "LLM"],
       "featured": false
     }
   ]

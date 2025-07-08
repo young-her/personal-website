@@ -15,7 +15,14 @@
     "vercel:dev": "npm run dev",
     "new-post": "node scripts/new-post.js",
     "post:new": "node scripts/new-post.js",
-    "setup-deployment": "./scripts/setup-deployment.sh"
+    "post:publish": "./scripts/publish-post.sh",
+    "blog:publish": "./scripts/publish-post.sh",
+    "blog:preview": "npm run dev",
+    "blog:sync": "git add . && git commit -m 'sync: 更新博客内容' && git push origin main",
+    "blog:auto-sync": "node scripts/auto-sync.js",
+    "blog:watch": "node scripts/auto-sync.js",
+    "setup-deployment": "./scripts/setup-deployment.sh",
+    "test:ci": "echo 'No tests specified' && exit 0"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.0",
@@ -49,6 +56,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "chokidar": "^4.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5"
   }
