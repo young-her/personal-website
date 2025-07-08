@@ -12,8 +12,8 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${BLUE}📝 博客文章一键发布助手${NC}"
-echo -e "${BLUE}================================${NC}"
+echo -e "${BLUE}📝 博客和数据一键发布助手${NC}"
+echo -e "${BLUE}=====================================${NC}"
 
 # 检查是否在正确的目录
 if [ ! -f "package.json" ]; then
@@ -25,10 +25,11 @@ fi
 echo -e "${YELLOW}请选择操作：${NC}"
 echo "1. 📝 创建新文章"
 echo "2. ✏️  编辑现有文章"
-echo "3. 🚀 发布文章到线上"
-echo "4. 👀 本地预览博客"
+echo "3. 🛠️  编辑工具数据"
+echo "4. 🚀 发布内容到线上"
+echo "5. 👀 本地预览网站"
 
-read -p "请输入选项 (1-4): " choice
+read -p "请输入选项 (1-5): " choice
 
 case $choice in
     1)
@@ -71,6 +72,41 @@ case $choice in
         fi
         ;;
     3)
+        echo -e "${GREEN}🛠️  编辑数据文件...${NC}"
+        echo -e "${YELLOW}可编辑的数据文件：${NC}"
+        echo "1. tools.json - 工具导航数据"
+        echo "2. 其他数据文件"
+        
+        read -p "请选择数据文件 (1-2): " data_choice
+        
+        case $data_choice in
+            1)
+                echo -e "${GREEN}正在打开工具数据编辑器...${NC}"
+                code "data/tools.json"
+                echo -e "${BLUE}💡 提示：修改工具数据后保存即可，自动同步功能会检测到更改${NC}"
+                ;;
+            2)
+                echo -e "${GREEN}选择其他数据文件...${NC}"
+                if [ -d "data" ]; then
+                    echo -e "${YELLOW}data目录下的文件：${NC}"
+                    ls -la data/
+                    read -p "请输入要编辑的文件名: " filename
+                    if [ -f "data/$filename" ]; then
+                        code "data/$filename"
+                    else
+                        echo -e "${RED}❌ 文件不存在${NC}"
+                    fi
+                else
+                    echo -e "${RED}❌ data目录不存在${NC}"
+                fi
+                ;;
+            *)
+                echo -e "${RED}❌ 无效选择${NC}"
+                exit 1
+                ;;
+        esac
+        ;;
+    4)
         echo -e "${GREEN}🚀 准备发布到线上...${NC}"
         
         # 检查是否有未提交的更改
@@ -81,7 +117,7 @@ case $choice in
             
             read -p "请输入提交信息: " commit_msg
             if [ -z "$commit_msg" ]; then
-                commit_msg="更新博客文章"
+                commit_msg="更新博客和数据"
             fi
             
             echo -e "${YELLOW}📤 提交更改...${NC}"
@@ -98,9 +134,11 @@ case $choice in
             echo -e "${YELLOW}⚠️  没有检测到更改，无需发布${NC}"
         fi
         ;;
-    4)
+    5)
         echo -e "${GREEN}👀 启动本地预览服务器...${NC}"
-        echo -e "${GREEN}🌐 访问 http://localhost:3000/blog${NC}"
+        echo -e "${GREEN}🌐 访问 http://localhost:3000${NC}"
+        echo -e "${GREEN}📝 博客页面：http://localhost:3000/blog${NC}"
+        echo -e "${GREEN}🛠️  工具页面：http://localhost:3000/tools${NC}"
         npm run dev
         ;;
     *)
@@ -114,4 +152,5 @@ echo -e "${BLUE}📚 提示：${NC}"
 echo -e "${BLUE}• 本地预览：npm run dev${NC}"
 echo -e "${BLUE}• 新建文章：npm run new-post${NC}"
 echo -e "${BLUE}• 一键发布：./scripts/publish-post.sh${NC}"
+echo -e "${BLUE}• 自动同步：npm run blog:auto-sync${NC}"
 echo -e "${BLUE}• 部署状态：vercel ls${NC}" 

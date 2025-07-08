@@ -7,6 +7,7 @@ const chokidar = require('chokidar');
 
 // 配置
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
+const DATA_DIR = path.join(process.cwd(), 'data'); // 新增：数据目录
 const DEBOUNCE_DELAY = 5000; // 5秒防抖
 const EXCLUDE_FILES = ['_template.mdx'];
 
@@ -42,8 +43,26 @@ function getGitStatus() {
 function syncChanges(changedFiles) {
   return new Promise((resolve, reject) => {
     const timestamp = new Date().toLocaleString('zh-CN');
-    const fileList = changedFiles.map(f => path.basename(f)).join(', ');
-    const commitMessage = `auto-sync: 更新博客文章 (${fileList}) - ${timestamp}`;
+    
+    // 分类文件类型
+    const blogFiles = changedFiles.filter(f => f.includes('/content/blog/'));
+    const dataFiles = changedFiles.filter(f => f.includes('/data/'));
+    
+    let changeDescription = '';
+    const fileTypes = [];
+    
+    if (blogFiles.length > 0) {
+      const blogFileNames = blogFiles.map(f => path.basename(f)).join(', ');
+      fileTypes.push(`博客文章 (${blogFileNames})`);
+    }
+    
+    if (dataFiles.length > 0) {
+      const dataFileNames = dataFiles.map(f => path.basename(f)).join(', ');
+      fileTypes.push(`数据文件 (${dataFileNames})`);
+    }
+    
+    changeDescription = fileTypes.join(' + ');
+    const commitMessage = `auto-sync: 更新${changeDescription} - ${timestamp}`;
 
     log('yellow', '📤 正在同步更改到远程仓库...');
     
@@ -68,6 +87,12 @@ function isBlogPost(filePath) {
   return filePath.includes('/content/blog/') && 
          basename.endsWith('.mdx') && 
          !EXCLUDE_FILES.includes(basename);
+}
+
+// 检查文件是否为数据文件
+function isDataFile(filePath) {
+  return filePath.includes('/data/') && 
+         (filePath.endsWith('.json') || filePath.endsWith('.js'));
 }
 
 // 防抖功能
@@ -95,19 +120,30 @@ function debouncedSync(filePath) {
 
 // 主函数
 function startAutoSync() {
-  log('blue', '🚀 启动博客自动同步监听器');
-  log('blue', `📁 监听目录: ${BLOG_DIR}`);
+  log('blue', '🚀 启动博客和数据自动同步监听器');
+  log('blue', `📁 监听博客目录: ${BLOG_DIR}`);
+  log('blue', `📊 监听数据目录: ${DATA_DIR}`);
   log('blue', `⏱️  防抖延迟: ${DEBOUNCE_DELAY / 1000}秒`);
   log('blue', '================================');
 
   // 检查目录是否存在
   if (!fs.existsSync(BLOG_DIR)) {
     log('red', `❌ 博客目录不存在: ${BLOG_DIR}`);
-    process.exit(1);
+  }
+  
+  if (!fs.existsSync(DATA_DIR)) {
+    log('red', `❌ 数据目录不存在: ${DATA_DIR}`);
   }
 
   // 创建文件监听器
-  const watcher = chokidar.watch(BLOG_DIR, {
+  const watchPaths = [BLOG_DIR, DATA_DIR].filter(dir => fs.existsSync(dir));
+  
+  if (watchPaths.length === 0) {
+    log('red', '❌ 没有有效的监听目录');
+    process.exit(1);
+  }
+
+  const watcher = chokidar.watch(watchPaths, {
     ignored: /(^|[\/\\])\../, // 忽略隐藏文件
     persistent: true,
     ignoreInitial: true
@@ -117,19 +153,28 @@ function startAutoSync() {
   watcher
     .on('add', filePath => {
       if (isBlogPost(filePath)) {
-        log('green', `📝 新增文章: ${path.basename(filePath)}`);
+        log('green', `📝 新增博客文章: ${path.basename(filePath)}`);
+        debouncedSync(filePath);
+      } else if (isDataFile(filePath)) {
+        log('green', `📊 新增数据文件: ${path.basename(filePath)}`);
         debouncedSync(filePath);
       }
     })
     .on('change', filePath => {
       if (isBlogPost(filePath)) {
-        log('yellow', `✏️  修改文章: ${path.basename(filePath)}`);
+        log('yellow', `✏️  修改博客文章: ${path.basename(filePath)}`);
+        debouncedSync(filePath);
+      } else if (isDataFile(filePath)) {
+        log('yellow', `🔧 修改数据文件: ${path.basename(filePath)}`);
         debouncedSync(filePath);
       }
     })
     .on('unlink', filePath => {
       if (isBlogPost(filePath)) {
-        log('red', `🗑️  删除文章: ${path.basename(filePath)}`);
+        log('red', `🗑️  删除博客文章: ${path.basename(filePath)}`);
+        debouncedSync(filePath);
+      } else if (isDataFile(filePath)) {
+        log('red', `🗑️  删除数据文件: ${path.basename(filePath)}`);
         debouncedSync(filePath);
       }
     })
@@ -139,7 +184,8 @@ function startAutoSync() {
 
   log('green', '✅ 自动同步已启动！');
   log('cyan', '💡 提示：');
-  log('cyan', '  • 编辑 .mdx 文件会自动触发同步');
+  log('cyan', '  • 编辑博客 .mdx 文件会自动触发同步');
+  log('cyan', '  • 编辑数据 .json 文件（如工具数据）会自动触发同步');
   log('cyan', '  • 同步有 5 秒防抖，避免频繁提交');
   log('cyan', '  • 按 Ctrl+C 停止监听');
   log('cyan', '================================');

@@ -21,6 +21,9 @@
     "blog:sync": "git add . && git commit -m 'sync: 更新博客内容' && git push origin main",
     "blog:auto-sync": "node scripts/auto-sync.js",
     "blog:watch": "node scripts/auto-sync.js",
+    "tools:manage": "node scripts/manage-tools.js",
+    "tools:edit": "code data/tools.json",
+    "data:sync": "git add data/ && git commit -m 'update: 更新数据文件' && git push origin main",
     "setup-deployment": "./scripts/setup-deployment.sh",
     "test:ci": "echo 'No tests specified' && exit 0"
   },
