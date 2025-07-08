@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "echo 'Tests not configured yet' && exit 0",
+    "test:watch": "echo 'Tests not configured yet' && exit 0",
+    "test:coverage": "echo 'Tests not configured yet' && exit 0",
     "deploy": "./scripts/deploy.sh production",
     "deploy:preview": "./scripts/deploy.sh preview",
     "health-check": "./scripts/health-check.sh",
@@ -25,7 +28,7 @@
     "tools:edit": "code data/tools.json",
     "data:sync": "git add data/ && git commit -m 'update: 更新数据文件' && git push origin main",
     "setup-deployment": "./scripts/setup-deployment.sh",
-    "test:ci": "echo 'No tests specified' && exit 0"
+    "test:ci": "echo 'Tests not configured yet' && exit 0"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.0",
@@ -59,6 +62,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/jest": "^29.5.12",
     "chokidar": "^4.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5"
